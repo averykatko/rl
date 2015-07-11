@@ -28,9 +28,10 @@ class Entity:
 class Item(Entity):
 	def __init__(self, location=None):
 		self.location = location # either a mob or a cell
+		self.cursed = False
 	def reaction_drop(self, mob, state):
-		mob.cell.items.append(self)
-		self.location = mob.cell x
+		mob.location.items.append(self)
+		self.location = mob.location
 
 class Potion(Item):
 	def reaction_quaff(self, mob, state):
@@ -73,10 +74,10 @@ class Mob(Entity):
 			self.asleep = False
 			self.arms_bound = False
 			self.mouth_bound = False
-	def __init__(self, position):
-		self.status = Status()
+	def __init__(self, location):
+		self.status = Mob.Status()
 		self.inventory = set()
-		self.position = position # a cell
+		self.location = location # a cell
 
 	def action_wait(self, state):
 		pass
@@ -95,17 +96,18 @@ class Mob(Entity):
 			pass
 	@inventory_action
 	def action_eat(self, item, state):
-		if reaction_eat in dir(item):
+		if "reaction_eat" in dir(item):
 			self.inventory.remove(item)
 			item.reaction_eat(self, state)
 		else:
 			pass
 	@inventory_action
 	def action_quaff(self, item, state):
-		if reaction_quaff in dir(item):
+		if "reaction_quaff" in dir(item):
 			self.inventory.remove(item)
 			item.reaction_quaff(self, state)
 		else:
+			print("you can't quaff that!!!!")
 			pass
 	def get_droppables(self, state):
 		#return [(lambda s: self.action_drop(i,s)) for i in self.inventory if not i.cursed]
@@ -144,12 +146,12 @@ class Player(Mob):
 		pass
 
 
-def main(...cursesargs...):
-	init curses stuff
-	init game
-	gameRunning = True
-	while gameRunning:
-		#TODO: main game loop
+# def main(...cursesargs...):
+# 	init curses stuff
+# 	init game
+# 	gameRunning = True
+# 	while gameRunning:
+# 		#TODO: main game loop
 
-if __name__ == "__main__":
-	curses.wrapper(main)
+# if __name__ == "__main__":
+# 	curses.wrapper(main)
